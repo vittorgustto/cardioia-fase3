@@ -32,7 +32,7 @@ O projeto CardioIA foi desenvolvido no contexto da disciplina IoT e Sistemas Emb
 
 O sistema simula um monitor de sinais vitais cardíacos, capaz de capturar dados fisiológicos, processá-los localmente e enviá-los para a nuvem, demonstrando a integração entre Edge Computing, Fog Computing e Cloud Computing.
 
-**Observação: Se não estiver conseguindo visualizar ou acessar as imagens e relatórios da Parte 1 e 2 por este README.MD [acesse a pasta de documentos](docs/) aonde se encontram estes arquivos.
+**Observação: Se não estiver conseguindo visualizar ou acessar as imagens e relatórios da Parte 1 e 2 por este README.MD [acesse a pasta de documentos](docs/) aonde se encontram estes arquivos.**
 
 
 **🔹 Parte 1 — Edge Computing (Armazenamento e Processamento Local)**
