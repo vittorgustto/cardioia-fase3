@@ -83,49 +83,113 @@ resultados_diagnostico.csv
 
 ---
 
-## 🔹 Parte 2 — Classificador de Risco
+## 🔹 Parte 2 — Comunicação MQTT e Dashboard no Node-RED
 
-A Parte 2 amplia o projeto para o uso de Machine Learning supervisionado, onde um modelo é treinado para classificar frases clínicas em alto risco ou baixo risco.
+Esta segunda etapa do projeto CardioIA tem como objetivo estabelecer a comunicação MQTT entre o dispositivo ESP32 (ou simulação via Node-RED) e o painel de monitoramento (Dashboard) desenvolvido no Node-RED, permitindo acompanhar em tempo real os parâmetros vitais de um paciente simulado — temperatura corporal, umidade e batimentos cardíacos (BPM).
 
-- **Entrada:** dataset rotulado (frases_risco.csv).
-- **Processo:** pré-processamento com TF-IDF, treinamento com algoritmos do Scikit-learn e avaliação do desempenho.
-- **Saída:** predição de risco para novas frases (ex.: “Falta de ar intensa” → Alto risco).
-
-💡 Essa etapa evidencia o uso prático de IA para apoio à tomada de decisão, priorizando pacientes em situações críticas.
+O projeto representa uma arquitetura IoT simples, segura e escalável para aplicações de monitoramento remoto de saúde, utilizando o protocolo MQTT e o broker em nuvem HiveMQ Cloud.
 
 ---
 
-## 🚀 Como Executar
+## 🧩 Arquitetura do Sistema
 
-1. Abra o notebook classificador_risco.ipynb.
-2. Carregue o dataset frases_risco.csv.
-3. Execute todas as células na ordem do notebook:
+O fluxo de comunicação segue o modelo Publish/Subscribe, típico do protocolo MQTT:
 
-- Pré-processamento com TF-IDF.
-- Treinamento do modelo (ex.: Regressão Logística ou Naive Bayes).
-- Avaliação (acurácia, matriz de confusão, exemplos de predição).
-
-💡 Exemplo de uso no final do notebook:
 ```
-Frase: "Estou com falta de ar e dor no peito"
-Predição: Alto Risco
+ESP32 (Publisher) → HiveMQ Cloud (Broker MQTT) → Node-RED (Subscriber)
 ```
 
+1. O ESP32 (ou simulação) coleta os dados e publica no tópico:
+
+```
+cardioIA/vitor/telemetry
+```
+
+2.  O HiveMQ Cloud atua como broker, intermediando a comunicação.
+
+3.  O Node-RED, configurado como assinante (subscriber), recebe os dados, processa e exibe as informações no Dashboard CardioIA.
+
 ---
 
-## 📊 Tecnologias Utilizadas
+## ⚙️ Configuração do HiveMQ Cloud
 
-- Python 3
-- Pandas — manipulação de dados
-- Scikit-learn — vetorização TF-IDF, treino e avaliação de modelos
-- Matplotlib — gráficos e matriz de confusão
-- Jupyter Notebook / Google Colab
+1. [Acesse HiveMQ Cloud Console](https://console.hivemq.cloud/)
+
+2. Crie um Serverless Cluster gratuito.
+
+3. Na aba Connection Details, copie:
+
+- Broker hostname: seu_cluster_id.s1.eu.hivemq.cloud
+- Porta MQTT TLS: 8883
+
+4. Na aba Access Management, crie um usuário e senha para autenticação MQTT.
+
+Essas credenciais serão usadas no Node-RED nos nós ``` mqtt in ``` e ``` mqtt out ```.
 
 ---
 
-## ▶️ Demonstração em Vídeo
+## 💡 Fluxo no Node-RED
 
-📹 [Clique aqui para assistir no YouTube](https://www.youtube.com/watch?v=CAedP-GF2Mo)  
+O fluxo é composto pelos seguintes nós:
+
+| Tipo de Nó       | Função       |
+|----------------|----------------|
+| Inject        | Gera dados simulados periodicamente (caso o ESP32 não esteja conectado)        |
+| Function        | Converte os dados simulados em formato JSON        |
+| MQTT Out        | Publica os dados no tópico cardioIA/vitor/telemetry        |
+| MQTT In        | Recebe os dados do broker MQTT        |
+| JSON        | Converte a string recebida para objeto JSON        |
+| Gauge        | Exibe o valor atual de BPM        |
+| Chart        | Mostra a variação de temperatura e umidade em tempo real        |
+| Text        | (Alerta)	Exibe mensagens de alerta automáticas        |
+
+**📍 Observação:**
+
+Os nós MQTT devem estar configurados com:
+
+- Servidor: seu_cluster_id.s1.eu.hivemq.cloud
+- Porta: 8883
+- Usar TLS: ✔️ Marque esta opção
+- Usuário e Senha: conforme criados no HiveMQ Cloud
+
+---
+
+## 🖥️ Interface (Dashboard)
+
+A interface foi desenvolvida no Node-RED Dashboard e pode ser acessada em:
+
+👉 http://127.0.0.1:1880/ui
+
+Estrutura do painel:
+- Título: CardioIA Monitor
+- Gauge (BPM): indicador analógico de batimentos cardíacos
+- Chart: gráfico de temperatura e umidade
+- Texto de Alerta: exibe mensagens como:
+  - ✅ Tudo normal
+  - ⚠️ Temperatura alta: 38.6°C
+  - ⚠️ BPM elevado: 110
+
+---
+
+## 🧠 Como o sistema funciona
+
+1. O ESP32 (ou simulador) gera leituras a cada intervalo configurado.
+2. Os dados são publicados no broker MQTT.
+3. O Node-RED assina o mesmo tópico e recebe as mensagens JSON.
+4. As leituras são processadas, exibidas em tempo real e comparadas com limites predefinidos.
+5. Caso a temperatura > 38 °C ou o BPM > 100, um alerta automático é mostrado no painel.
+
+---
+
+## 📸 Evidências (prints)
+
+As imagens abaixo mostram o funcionamento do painel e do fluxo:
+
+- Fluxo MQTT configurado no Node-RED
+- Dashboard em execução com atualização em tempo real
+- Alertas automáticos sendo disparados
+
+![Gráfico Node-RED](./assets/Gráfico-Matriz-de-Confusão.png)
 
 ---
 
@@ -156,191 +220,6 @@ cardioia-fase2/
 │  │  └─ frases_risco.csv            # dataset com frases e rótulos (alto/baixo risco)
 └─ README
 ```
-
----
-
-# 🫀 CardioIA – Fase 2: Ir Além 1 – Interface do CardioIA
-
-O objetivo é construir a interface do **CardioIA** em **React + Vite**, simulando um portal de cardiologia com autenticação fake, listagem de pacientes, agendamento de consultas e um dashboard com métricas.
-
----
-
-## 📌 Funcionalidades
-
-- 🔑 **Autenticação simulada** via Context API (login fake, armazenado em estado).
-- 👨‍⚕️ **Listagem de pacientes** consumindo dados de uma API fake (JSONPlaceholder).
-- 📅 **Formulário de agendamento de consultas** usando `useState` e `useReducer`.
-- 📊 **Dashboard simples** com:
-  - Número total de pacientes.
-  - Número total de consultas agendadas.
-  - Gráfico ilustrativo com **Recharts**.
-- 🔒 **Proteção de rotas**: apenas usuários logados conseguem acessar pacientes, agendamentos e dashboard.
-- 🎨 **Estilização responsiva** utilizando CSS Modules.
-
----
-
-## 🚀 Como executar o projeto
-
-1️. **Download dos arquivos**
-
-```bash
-Faça o download do arquivo "ir_alem1_frontend.zip" e extraia ele. O resultado será a pasta "ir_alem1_frontend" contendo todos os arquivos do portal.
-```
-
-2. **Abrir no VS Code**
-```
-Com o VS Code aberto abra a pasta "ir_alem1_frontend" no VS Code.
-```
-
-3. **Instalar as dependências**
-```
-npm install
-```
-
-4. **Instalar a biblioteca de gráficos (Recharts)**
-```
-npm install recharts
-```
-
-5. **Rodar a aplicação**
-```
-npm run dev
-```
-
-A aplicação estará disponível em:
-👉 http://localhost:5173
-
----
-
-## 🧪 Login Simulado
-
-Para acessar o portal, use qualquer e-mail e senha no login.
-Exemplo:
-
-```
-email: teste@teste.com
-senha: 123456
-```
-
----
-
-## ▶️ Demonstração em Vídeo
-
-📹 [Clique aqui para assistir no YouTube](https://www.youtube.com/watch?v=cAYX2YwVrxs)  
-
----
-
-## 📑 Observações
-
-Este projeto não possui back-end real. Todos os dados são simulados via JSONPlaceholder e estados internos do React. O objetivo é demonstrar boas práticas de Front-End:
-
-
-  - Componentização
-  - Hooks (useState, useEffect, useContext, useReducer)
-  - Context API
-  - Roteamento protegido
-
----
-
-## 📂 Estrutura dos Arquivos (Ir Além 1)
-
-```
-cardioia-fase2/
-├─ assets/
-├─ docs/
-│  ├─ Ir Além 1
-│  │  └─ ir_alem1_frontend.zip
-└─ README
-```
-
----
-
-# 🫀 CardioIA – Fase 2: Ir Além 2 – Diagnóstico visual em cardiologia com MLP
-
-Este projeto aplica uma **Rede Neural Artificial (MLP – Perceptron Multicamadas)** para classificar imagens médicas de **eletrocardiogramas (ECG)** em **normal** ou **anormal**.  
-
-Ele faz parte do desafio *CardioIA*, ampliando o uso da Inteligência Artificial para diagnósticos visuais e reforçando o papel da IA no apoio à decisão médica.
-
----
-
-## 📊 Dataset
-
-- **Fonte:** [Kaggle – Heartbeat Dataset](https://www.kaggle.com/datasets/shayanfazeli/heartbeat)  
-- Classes:  
-  - **Normal** → ECGs saudáveis  
-  - **Anormal** → ECGs com irregularidades  
-
-O dataset foi balanceado para conter o mesmo número de amostras normais e anormais.
-
----
-
-## ⚙️ Etapas do Projeto
-
-1. **Pré-processamento das imagens**
-   - Conversão para tons de cinza
-   - Redimensionamento para 128x128 pixels
-   - Normalização para valores entre 0 e 1  
-
-2. **Construção do modelo MLP (Keras)**
-   - Camada de entrada (Flatten)  
-   - Camadas densas ocultas com ReLU e Dropout  
-   - Camada de saída com ativação Sigmoid  
-
-3. **Treinamento**
-   - Função de perda: `binary_crossentropy`  
-   - Otimizador: `adam`  
-   - Early Stopping para evitar overfitting  
-
-4. **Avaliação**
-   - Métricas: Acurácia, Precisão, Recall, F1-score  
-   - Matriz de confusão  
-
----
-
-## 🚀 Como Executar
-
-1️. Faça o download do notebook "rede_neural_ecg.ipynb" e do arquivo "kaggle.json"
-   
-2. Abra o notebook no Google Colab ou Jupyter.
-
-3. Faça upload do arquivo kaggle.json na seção "Arquivos" do Colab
-
-4. Execute todas as células na ordem.
-
----
-
-## 📈 Resultados
-
-- **Acurácia no conjunto de teste:** ~91%  
-- **Relatório de classificação:**
-
-```
-          precision    recall  f1-score   support
-
-  normal       0.88      0.95      0.92      1012
- anormal       0.95      0.87      0.91      1011
-
-accuracy                           0.91      2023
-macro avg      0.92      0.91      0.91      2023
-weighted avg   0.92      0.91      0.91      2023
-
-```
-
-**Matriz de Confusão:**
-
-|               | Pred Normal | Pred Anormal |
-|---------------|-------------|--------------|
-| **True Normal**   | 964         | 48           |
-| **True Anormal**  | 127         | 884          |
-
-![Gráfico Matriz de Confusão](./assets/Gráfico-Matriz-de-Confusão.png)
-
-
----
-
-## ▶️ Demonstração em Vídeo
-
-📹 [Clique aqui para assistir no YouTube](https://www.youtube.com/watch?v=LlpKeJxpuuE)  
 
 ---
 
