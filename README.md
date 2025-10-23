@@ -90,6 +90,10 @@ Offline: continua armazenando    Online: envia via Serial.println() e limpa SPIF
 
 ## 💻 Códigos ESP32 (Arduino/Wokwi) e como usar no Wokwi
 
+**0. [Acesse o simulador Wokwi com o Projeto CardioIA Fase 3](https://wokwi.com/projects/445458674379080705)**
+
+ou
+
 **1. Cole esse código no 'skect.ino' no Wokwi:**
 
 ```
