@@ -32,6 +32,9 @@ O projeto CardioIA foi desenvolvido no contexto da disciplina IoT e Sistemas Emb
 
 O sistema simula um monitor de sinais vitais cardíacos, capaz de capturar dados fisiológicos, processá-los localmente e enviá-los para a nuvem, demonstrando a integração entre Edge Computing, Fog Computing e Cloud Computing.
 
+**Observação: Se não estiver conseguindo visualizar ou acessar as imagens e relatórios da Parte 1 e 2 por este README.MD [acesse a pasta de documentos](docs/) aonde se encontram estes arquivos.
+
+
 **🔹 Parte 1 — Edge Computing (Armazenamento e Processamento Local)**
 
 Nesta etapa, foi desenvolvido no simulador Wokwi um sistema com ESP32 e sensores DHT22 (temperatura e umidade) e sensor de batimentos cardíacos simulado, que:
@@ -326,7 +329,7 @@ O relatório da Parte 1 descreve:
 - Armazenamento local (SPIFFS).
 - Lógica de resiliência offline/online.
 
-[📄 Relatório CardioIA Fase 3 - Parte 1](https://github.com/vittorgustto/cardioia-fase2/blob/main/docs/Parte%201/Relatório%20CardioIA%20Fase%203%20Parte%201.docx?raw=true)
+📄 [Relatório CardioIA Fase 3 - Parte 1](docs/Parte%201/Relatório-CardioIA-Fase-3-Parte-1.docx)
 
 
 ---
@@ -455,7 +458,7 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 
 O relatório detalhado sobre o fluxo MQTT e a configuração do dashboard encontra-se no arquivo:
 
-[📄 Relatório CardioIA Fase 3 - Parte 2](https://github.com/vittorgustto/cardioia-fase2/blob/main/docs/Parte%202/Relatório%20CardioIA%20Fase%203%20Parte%202.docx?raw=true)
+📄 [Relatório CardioIA Fase 3 - Parte 2](docs/Parte%202/Relatório-CardioIA-Fase-3-Parte-2.docx)
 
 ---
 
