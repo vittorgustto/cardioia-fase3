@@ -85,7 +85,7 @@ Offline: continua armazenando    Online: envia via Serial.println() e limpa SPIF
 
 ---
 
-## 💻 Código ESP32 (Arduino/Wokwi) e como usar no Wokwi
+## 💻 Códigos ESP32 (Arduino/Wokwi) e como usar no Wokwi
 
 **1. Cole esse código no 'skect.ino' no Wokwi:**
 
@@ -480,18 +480,12 @@ cardioia-fase3/
 ├─ assets/
 ├─ docs/
 │  ├─ Parte1/
-│  │  ├─ diagnostico.py
-│  │  ├─ frases.txt
-│  │  ├─ mapa_conhecimento.csv
-│  │  └─ resultados_diagnostico.csv
+│  │  ├─ Print-ESP32-Wokwi.png
+│  │  └─ Relatório-CardioIA-Fase-3-Parte-1.docx
 │  ├─ Parte2/
-│  │  ├─ classificador.ipynb
-│  │  └─ frases_risco.csv
-│  ├─ Ir Além 1
-│  │  └─ ir_alem1_frontend.zip
-│  ├─ Ir Além 2
-│  │  ├─ kaggle.json
-│  │  └─ rede_neural_ecg.ipynb
+│  │  ├─ Print-Node-RED.png
+│  │  ├─ Print-Node-RED-Dashboard.png
+│  │  └─ Relatório-CardioIA-Fase-3-Parte-2.docx
 └─ README.md
 ```
 
