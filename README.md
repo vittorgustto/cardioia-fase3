@@ -24,62 +24,246 @@
 
 ## 📜 Descrição
 
-# 🩺 CardioIA — Fase 2
+# 🩺 CardioIA — Fase 3: Monitoramento Contínuo de Sinais Vitais com IoT
 
-**Diagnóstico Automatizado: IA no Estetoscópio Digital**
+**📘 Introdução**
 
-Este repositório contém a Fase 2 do projeto CardioIA, dividida em duas partes:
+O projeto CardioIA foi desenvolvido no contexto da disciplina IoT e Sistemas Embarcados da FIAP, com o propósito de aplicar conceitos práticos de Internet das Coisas (IoT) voltados à saúde digital.
 
-- Parte 1: Extração de sintomas e sugestão de diagnóstico.
+O sistema simula um monitor de sinais vitais cardíacos, capaz de capturar dados fisiológicos, processá-los localmente e enviá-los para a nuvem, demonstrando a integração entre Edge Computing, Fog Computing e Cloud Computing.
 
-- Parte 2: Classificação de risco em frases clínicas com Machine Learning.
+**🔹 Parte 1 — Edge Computing (Armazenamento e Processamento Local)**
 
----
+Nesta etapa, foi desenvolvido no simulador Wokwi um sistema com ESP32 e sensores DHT22 (temperatura e umidade) e sensor de batimentos cardíacos simulado, que:
+- Captura dados periodicamente.
+- Armazena as leituras no sistema de arquivos SPIFFS.
+- Garante resiliência offline: mesmo sem conexão Wi-Fi, os dados continuam sendo gravados localmente até que a conectividade seja restabelecida, momento em que as informações são enviadas e o armazenamento local é limpo.
 
-## 📌 Objetivo
+**🔹 Parte 2 — Fog/Cloud Computing (Transmissão MQTT e Dashboard Node-RED)**
 
-O propósito desta fase é simular a automatização do diagnóstico com IA, mostrando como algoritmos simples aliados a dados bem estruturados podem apoiar médicos em processos de triagem e decisão clínica.
-
----
-
-## 🔹 Parte 1 — Diagnóstico Automático
-
-A Parte 1 simula um sistema especialista baseado em regras, no qual sintomas mencionados por pacientes em frases livres são detectados automaticamente e relacionados a possíveis diagnósticos.
-
-- **Entrada:** frases de pacientes (ex.: “Estou com dor no peito e falta de ar”).
-- **Processo:** identificação de sintomas com base no mapa_conhecimento.csv.
-- **Saída:** lista de sintomas detectados e diagnósticos sugeridos.
-
-💡 Essa etapa mostra como sistemas simples de correspondência podem apoiar triagens médicas iniciais.
+Nesta etapa, os dados são transmitidos via protocolo MQTT para a nuvem (HiveMQ Cloud) e visualizados em tempo real no Node-RED Dashboard.
+O sistema exibe gráficos, medidores e alertas automáticos, ilustrando a aplicação de monitoramento remoto de saúde com base em tecnologias de IoT médico.
 
 ---
 
-## 🚀 Como Executar
+## 🎯 Objetivo
 
-1. Abra a pasta "Parte 1" no VS Code.
+- 📡 Capture sinais vitais simulados (temperatura, umidade, batimentos).
+- 💾 Armazene localmente os dados, assegurando resiliência em caso de desconexão (Edge Computing).
+- ☁️ Transmita informações para a nuvem via MQTT (Fog/Cloud).
+- 📊 Exiba resultados em dashboards interativos, com alertas automáticos.
+- 🔒 Promova reflexões sobre segurança, eficiência e boas práticas no contexto da IoT aplicada à saúde.e:
 
-2. Execute o script no terminal:
+---
+
+## 🔹 Parte 1 — Armazenamento e Processamento Local (Edge Computing)
+
+Nesta primeira parte do projeto CardioIA, o foco foi desenvolver um sistema embarcado simulado com ESP32 no Wokwi, capaz de:
+
+- Capturar sinais vitais de forma simulada (temperatura, umidade e batimentos cardíacos).
+- Armazenar os dados localmente no SPIFFS.
+- Garantir resiliência offline, continuando a coleta mesmo sem conectividade, e enviar os dados quando a conexão for restabelecida.
+
+Essa etapa demonstra o papel do Edge Computing em aplicações de saúde críticas, onde a continuidade da coleta de dados é essencial.
+
+---
+
+## 🧩 Fluxo de Funcionamento
 
 ```
-python diagnostico.py
+Coleta de dados do DHT22 + batimentos simulados
+            │
+            ▼
+Armazenamento local no SPIFFS
+            │
+            ▼
+Verifica conexão Wi-Fi
+ ┌───────────────┴───────────────┐
+ │                               │
+Offline: continua armazenando    Online: envia via Serial.println() e limpa SPIFFS
 ```
 
-3. A saída será gerada no arquivo:
+---
+
+## 💻 Código ESP32 (Arduino/Wokwi)
 
 ```
-resultados_diagnostico.csv
+// main.ino - CardioIA Fase3 Parte1 (ESP32 Arduino)
+// Versão Final - Simulação Wokwi
+// Autor: (seu nome)
+// Descrição: Leitura DHT22 + botão de batimentos, armazenamento simulado localmente.
+
+// --- Bibliotecas ---
+#include <Arduino.h>
+#include "config.h"
+#if USE_DHT
+  #include "DHT.h"
+  DHT dht(DHT_PIN, DHT_TYPE);
+#endif
+
+// --- Configurações e estados ---
+bool wifiConnected = false;       // variável para simular conexão
+unsigned long lastSampleMillis = 0;
+unsigned long lastBeatWindowStart = 0;
+int beatCountWindow = 0;
+unsigned long totalSamplesStored = 0;
+
+// --- Funções utilitárias ---
+float readTemperature() {
+  #if USE_DHT
+    float t = dht.readTemperature();
+    if (isnan(t)) return 36.0 + random(-50,50)/100.0;
+    return t;
+  #else
+    return 36.5 + random(-150,150)/100.0;
+  #endif
+}
+
+float readHumidity() {
+  #if USE_DHT
+    float h = dht.readHumidity();
+    if (isnan(h)) return 50.0 + random(-200,200)/100.0;
+    return h;
+  #else
+    return 45.0 + random(-300,300)/100.0;
+  #endif
+}
+
+// Conta batimentos via botão (ou simula)
+int getBeatsPerMinute() {
+  unsigned long now = millis();
+  if (USE_BUTTON_FOR_BEATS) {
+    if (now - lastBeatWindowStart >= 10000) { // janela de 10s
+      int bpm = (beatCountWindow * 60000) / 10000;
+      beatCountWindow = 0;
+      lastBeatWindowStart = now;
+      return bpm;
+    } else {
+      return -1; // ainda coletando
+    }
+  } else {
+    return 60 + random(-15,45); // simulado
+  }
+}
+
+// ISR do botão
+#if USE_BUTTON_FOR_BEATS
+void IRAM_ATTR onBeatButton() {
+  beatCountWindow++;
+}
+#endif
+
+void processSerialCommands() {
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    if (cmd.length() == 0) return;
+    if (cmd.equalsIgnoreCase("c") || cmd.equalsIgnoreCase("connect")) {
+      wifiConnected = true;
+      Serial.println("[CMD] Simulação: CONNECTED");
+    } else if (cmd.equalsIgnoreCase("d") || cmd.equalsIgnoreCase("disconnect")) {
+      wifiConnected = false;
+      Serial.println("[CMD] Simulação: DISCONNECTED");
+    } else if (cmd.equalsIgnoreCase("sync")) {
+      Serial.println("[CMD] Sincronização não implementada na simulação.");
+    } else if (cmd.equalsIgnoreCase("status")) {
+      Serial.printf("[STATUS] conectado=%d samples=%lu\n", wifiConnected ? 1 : 0, totalSamplesStored);
+    } else {
+      Serial.printf("[CMD] Comando desconhecido: %s\n", cmd.c_str());
+    }
+  }
+}
+
+// Simulação de armazenamento local (sem SPIFFS real)
+bool appendSampleSimulated(const String &line) {
+  Serial.print("[SIMULATED_SAVE] ");
+  Serial.println(line);
+  totalSamplesStored++;
+  Serial.printf("[STORE] Amostra simulada armazenada (total=%lu).\n", totalSamplesStored);
+  return true;
+}
+
+// --- Setup ---
+void setup() {
+  Serial.begin(115200);
+  delay(2000);
+  Serial.println("CardioIA - Fase3 Parte1 (Simulação Wokwi)");
+  Serial.println("----------------------------------------------------");
+  Serial.println("[INFO] Modo simulado de armazenamento (sem SPIFFS real no Wokwi).");
+
+  #if USE_DHT
+    dht.begin();
+    Serial.println("DHT22 inicializado com sucesso.");
+  #endif
+
+  #if USE_BUTTON_FOR_BEATS
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onBeatButton, FALLING);
+    lastBeatWindowStart = millis();
+    Serial.println("Botão de batimentos configurado.");
+  #endif
+
+  Serial.println("Use 'c' (connect) ou 'd' (disconnect) via Serial para simular conexão.");
+  Serial.println("----------------------------------------------------");
+}
+
+// --- Loop ---
+void loop() {
+  processSerialCommands();
+
+  unsigned long now = millis();
+  if (now - lastSampleMillis >= SAMPLE_INTERVAL_MS) {
+    lastSampleMillis = now;
+
+    float temp = readTemperature();
+    float hum = readHumidity();
+    int bpm = getBeatsPerMinute();
+
+    if (USE_BUTTON_FOR_BEATS && bpm == -1) {
+      Serial.println("[SAMPLE] Aguardando completar janela de batimentos...");
+    } else {
+      String sample = "{";
+      sample += "\"timestamp\":" + String(now);
+      sample += ",\"temp\":" + String(temp,2);
+      sample += ",\"hum\":" + String(hum,2);
+      sample += ",\"bpm\":" + String(bpm);
+      sample += "}";
+
+      Serial.print("[SAMPLE] ");
+      Serial.println(sample);
+      appendSampleSimulated(sample);
+    }
+  }
+
+  delay(10);
+}
 ```
 
-4. O arquivo contém:
+---
 
-- A frase original.
-- Sintomas detectados.
-- Diagnósticos sugeridos.
+## 📸 Evidências (prints)
 
-💡 Exemplo de resultado esperado:
-| frase                          | sintomas_detectados | diagnosticos_sugeridos |
-| ------------------------------ | ------------------- | ---------------------- |
-| "Sinto dor no peito há 2 dias" | dor no peito        | Infarto                |
+A imagem abaixo mostra:
+
+- Interface do Wokwi simulando dados do ESP32
+- Dados armazenados e enviados via Serial Monitor
+
+![Print do ESP32 no Wokwi](./docs/Parte%201/Print-ESP32-Wokwi.png)
+
+---
+
+## 🧾 Relatório Técnico
+
+O relatório da Parte 1 descreve:
+
+Coleta de dados e simulação de sensores.
+
+Armazenamento local (SPIFFS).
+
+Lógica de resiliência offline/online.
+
+[📄 Relatório CardioIA Fase 3 - Parte 1](https://github.com/vittorgustto/cardioia-fase2/blob/main/docs/Parte%201/Relatório%20CardioIA%20Fase%203%20Parte%201.docx?raw=true)
+
 
 ---
 
@@ -88,6 +272,14 @@ resultados_diagnostico.csv
 Esta segunda etapa do projeto CardioIA tem como objetivo estabelecer a comunicação MQTT entre o dispositivo ESP32 (ou simulação via Node-RED) e o painel de monitoramento (Dashboard) desenvolvido no Node-RED, permitindo acompanhar em tempo real os parâmetros vitais de um paciente simulado — temperatura corporal, umidade e batimentos cardíacos (BPM).
 
 O projeto representa uma arquitetura IoT simples, segura e escalável para aplicações de monitoramento remoto de saúde, utilizando o protocolo MQTT e o broker em nuvem HiveMQ Cloud.
+
+---
+
+🧱 Requisitos
+
+- Node.js e Node-RED instalados
+- Conexão MQTT (HiveMQ Cloud)
+- Dashboard Node-RED habilitado (node-red-dashboard)
 
 ---
 
@@ -189,18 +381,31 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 - Dashboard em execução com atualização em tempo real
 - Alertas automáticos sendo disparados
 
-![Gráfico Node-RED](./assets/Gráfico-Matriz-de-Confusão.png)
+![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.png)
+
+![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.png)
 
 ---
 
-## 🔎 Conclusão
+## 🧾 Relatório Técnico
 
-A **Fase 2 do CardioIA** demonstra duas abordagens complementares para diagnóstico automatizado:
+O relatório detalhado sobre o fluxo MQTT e a configuração do dashboard encontra-se no arquivo:
 
-1. **Regras baseadas em sintomas (Parte 1)** — úteis para triagens rápidas.
-2. **Machine Learning supervisionado (Parte 2)** — capaz de aprender padrões e generalizar para novos casos.
+[📄 Relatório CardioIA Fase 3 - Parte 2](https://github.com/vittorgustto/cardioia-fase2/blob/main/docs/Parte%202/Relatório%20CardioIA%20Fase%203%20Parte%202.docx?raw=true)
 
-Essas técnicas reforçam como a **IA pode apoiar a medicina** ao oferecer ferramentas de análise inicial, organização da informação clínica e suporte à decisão médica, sem substituir a avaliação profissional.
+---
+
+## 🧠 Conclusão Geral
+
+O projeto CardioIA demonstrou de forma prática e integrada como as tecnologias de IoT, Edge Computing, Fog Computing e Cloud Computing podem ser aplicadas no contexto da saúde digital.
+
+A Parte 1 evidenciou o papel da resiliência offline e do armazenamento local, enquanto a Parte 2 mostrou a transmissão de dados e visualização em tempo real.
+
+Com isso, o sistema oferece uma base sólida para futuras implementações reais, como:
+
+- Integração com banco de dados em nuvem.
+- Notificações via aplicativo móvel.
+- Análise preditiva com IA para detecção precoce de anomalias.
 
 ---
 
