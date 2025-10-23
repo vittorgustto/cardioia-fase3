@@ -85,7 +85,9 @@ Offline: continua armazenando    Online: envia via Serial.println() e limpa SPIF
 
 ---
 
-## 💻 Código ESP32 (Arduino/Wokwi)
+## 💻 Código ESP32 (Arduino/Wokwi) e como usar no Wokwi
+
+**1. Cole esse código no 'skect.ino' no Wokwi:**
 
 ```
 // main.ino - CardioIA Fase3 Parte1 (ESP32 Arduino)
@@ -239,6 +241,67 @@ void loop() {
 }
 ```
 
+**2. Cole este código em 'diagram.json':**
+
+```
+{
+  "version": 1,
+  "author": "Vitor Gomes",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -48, "left": 33.64, "attrs": {} },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btn",
+      "top": 73.4,
+      "left": -144,
+      "attrs": { "color": "green", "xray": "1" }
+    },
+    { "type": "wokwi-dht22", "id": "dht", "top": -191.7, "left": -53.4, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "dht:VCC", "esp:3V3", "red", [] ],
+    [ "dht:GND", "esp:GND.1", "black", [] ],
+    [ "dht:SDA", "esp:4", "green", [] ],
+    [ "btn:1.l", "esp:14", "green", [] ],
+    [ "btn:2.r", "esp:GND.1", "green", [] ]
+  ],
+  "dependencies": {}
+}
+```
+
+**3. Crie um novo arquivo chamado 'config.h' no ESP32 do Wokwi e cole este código dentro dele:**
+
+```
+// config.h - parâmetros configuráveis para testes rápidos
+
+#pragma once
+
+// ----- Sensores -----
+#define USE_DHT  true            // true = usar DHT22 real no Wokwi; false = simula temperatura/umidade
+#define DHT_PIN  4                // pino DHT (se usar)
+#define DHT_TYPE DHT22
+
+// Segundo sensor: botão pra simular batimentos
+#define USE_BUTTON_FOR_BEATS true // true = usa um botão virtual no Wokwi para contar batimentos
+#define BUTTON_PIN 14             // pino do botão (se usar)
+#define BEAT_WINDOW_MS 10000      // janela para contagem de batimentos (aqui 10s para teste rápido)
+
+// ----- Amostragem -----
+#define SAMPLE_INTERVAL_MS 2000   // intervalo entre amostras (2s para teste)
+#define SYNC_INTERVAL_MS 5000     // tenta sincronizar a cada 5s quando conectado (teste)
+
+// ----- Resiliência / SPIFFS -----
+#define MAX_SAMPLES_STORED 20     // limite pequeno para testes (20 amostras)
+
+```
+
+**4. Instale a biblioteca 'DHT Sensor Library' no mesmo ambiente do ESP32 do Wokwi**
+
+**5. Rode a simulação**
+
 ---
 
 ## 📸 Evidências (prints)
@@ -246,7 +309,10 @@ void loop() {
 A imagem abaixo mostra:
 
 - Interface do Wokwi simulando dados do ESP32
+- Batimentos cardíacos simulados por cliques
 - Dados armazenados e enviados via Serial Monitor
+- Armazenamento local (SPIFFS).
+- Lógica de resiliência offline/online.
 
 ![Print do ESP32 no Wokwi](./docs/Parte%201/Print-ESP32-Wokwi.png)
 
@@ -256,11 +322,9 @@ A imagem abaixo mostra:
 
 O relatório da Parte 1 descreve:
 
-Coleta de dados e simulação de sensores.
-
-Armazenamento local (SPIFFS).
-
-Lógica de resiliência offline/online.
+- Coleta de dados e simulação de sensores.
+- Armazenamento local (SPIFFS).
+- Lógica de resiliência offline/online.
 
 [📄 Relatório CardioIA Fase 3 - Parte 1](https://github.com/vittorgustto/cardioia-fase2/blob/main/docs/Parte%201/Relatório%20CardioIA%20Fase%203%20Parte%201.docx?raw=true)
 
@@ -395,7 +459,7 @@ O relatório detalhado sobre o fluxo MQTT e a configuração do dashboard encont
 
 ---
 
-## 🧠 Conclusão Geral
+## 🏆 Conclusão Geral
 
 O projeto CardioIA demonstrou de forma prática e integrada como as tecnologias de IoT, Edge Computing, Fog Computing e Cloud Computing podem ser aplicadas no contexto da saúde digital.
 
@@ -409,51 +473,10 @@ Com isso, o sistema oferece uma base sólida para futuras implementações reais
 
 ---
 
-## 🗂 Estrutura dos Arquivos (Parte 1 e 2)
-
-```
-cardioia-fase2/
-├─ assets/
-├─ docs/
-│  ├─ Parte1/
-│  │  ├─ diagnostico.py              # script que analisa frases e sugere diagnósticos
-│  │  ├─ sintomas.txt                # 10 frases simuladas de pacientes
-│  │  ├─ mapa_conhecimento.csv       # mapa de sintomas → doenças
-│  │  └─ resultados_diagnostico.csv  # saída gerada
-│  ├─ Parte2/
-│  │  ├─ classificador.ipynb         # notebook com TF-IDF, treino e avaliação do modelo
-│  │  └─ frases_risco.csv            # dataset com frases e rótulos (alto/baixo risco)
-└─ README
-```
-
----
-
-## 🏆 Conclusão
-
-O modelo MLP foi capaz de alcançar 91% de acurácia, mostrando que mesmo arquiteturas simples podem apoiar tarefas de triagem médica em ECGs.
-
-Este resultado reforça a importância da IA na área da saúde, auxiliando profissionais na detecção precoce de anomalias cardíacas.
-
----
-
-## Estrutura dos Arquivos (Ir Além 2)
-
-```
-cardioia-fase2/
-├─ assets/
-├─ docs/
-│  ├─ Ir Além 2
-│  │  ├─ kaggle.json
-│  │  └─ rede_neural_ecg.ipynb
-└─ README
-```
-
----
-
 ## 🗂 Estrutura Completa do Repositório
 
 ```
-cardioia-fase2/
+cardioia-fase3/
 ├─ assets/
 ├─ docs/
 │  ├─ Parte1/
