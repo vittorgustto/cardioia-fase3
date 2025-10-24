@@ -51,11 +51,11 @@ O sistema exibe gráficos, medidores e alertas automáticos, ilustrando a aplica
 
 ## 🎯 Objetivo
 
-- 📡 Capture sinais vitais simulados (temperatura, umidade, batimentos).
-- 💾 Armazene localmente os dados, assegurando resiliência em caso de desconexão (Edge Computing).
-- ☁️ Transmita informações para a nuvem via MQTT (Fog/Cloud).
-- 📊 Exiba resultados em dashboards interativos, com alertas automáticos.
-- 🔒 Promova reflexões sobre segurança, eficiência e boas práticas no contexto da IoT aplicada à saúde.e:
+- 📡 Capturar sinais vitais simulados (temperatura, umidade, batimentos).
+- 💾 Armazenar localmente os dados, assegurando resiliência em caso de desconexão (Edge Computing).
+- ☁️ Transmitir informações para a nuvem via MQTT (Fog/Cloud).
+- 📊 Exibir resultados em dashboards interativos, com alertas automáticos.
+- 🔒 Promover reflexões sobre segurança, eficiência e boas práticas no contexto da IoT aplicada à saúde.e:
 
 ---
 
