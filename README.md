@@ -386,7 +386,7 @@ O relatório da Parte 1 descreve:
 
 📄 [Relatório CardioIA Fase 3 - Parte 1](docs/Parte%201/Relatório-CardioIA-Fase-3-Parte-1.docx)
 
-**Caso não esteja conseguindo visualizer [entre neste link, entre na pasta Parte 1 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizer por instabilidade da plataforma [entre neste link, entre na pasta Parte 1 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 
 ---
@@ -519,7 +519,7 @@ O relatório detalhado sobre o fluxo MQTT e a configuração do dashboard encont
 
 📄 [Relatório CardioIA Fase 3 - Parte 2](docs/Parte%202/Relatório-CardioIA-Fase-3-Parte-2.docx)
 
-**Caso não esteja conseguindo visualizar [entre neste link, entre na pasta Parte 2 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizar por instabilidade da plataforma [entre neste link, entre na pasta Parte 2 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 ---
 
