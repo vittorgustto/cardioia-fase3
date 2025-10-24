@@ -505,7 +505,7 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 - Dashboard em execução com atualização em tempo real
 - Alertas automáticos sendo disparados
 
-![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.pn g)
+![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.png)
 
 ![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.png)
 
