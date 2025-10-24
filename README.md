@@ -94,120 +94,157 @@ Offline: continua armazenando    Online: envia via Serial.println() e limpa SPIF
 
 ou
 
-**1. Cole esse código no 'skect.ino' no Wokwi:**
+**1. Cole esse código no 'skect.ino' no Wokwi (este é o código C++ comentado):**
 
 ```
-// main.ino - CardioIA Fase3 Parte1 (ESP32 Arduino)
-// Versão Final - Simulação Wokwi
-// Autor: (seu nome)
-// Descrição: Leitura DHT22 + botão de batimentos, armazenamento simulado localmente.
+// ============================================================
+// Projeto: CardioIA - Fase 3 - Parte 1
+// Tema: Armazenamento e Processamento Local (Edge Computing)
+// Simulação no Wokwi com ESP32
+// Autor: (Seu Nome)
+// ============================================================
 
-// --- Bibliotecas ---
-#include <Arduino.h>
-#include "config.h"
+// --- Bibliotecas necessárias ---
+#include <Arduino.h>     // Biblioteca base do Arduino
+#include "config.h"      // Arquivo de configuração do projeto
+
+// Se o sensor DHT for habilitado em config.h, inclui a biblioteca DHT
 #if USE_DHT
   #include "DHT.h"
-  DHT dht(DHT_PIN, DHT_TYPE);
+  DHT dht(DHT_PIN, DHT_TYPE);   // Inicializa o sensor DHT com o pino e tipo definidos
 #endif
 
-// --- Configurações e estados ---
-bool wifiConnected = false;       // variável para simular conexão
-unsigned long lastSampleMillis = 0;
-unsigned long lastBeatWindowStart = 0;
-int beatCountWindow = 0;
-unsigned long totalSamplesStored = 0;
+// --- Variáveis globais ---
+bool wifiConnected = false;          // Simula o estado da conexão Wi-Fi
+unsigned long lastSampleMillis = 0;  // Armazena o tempo da última coleta de dados
+unsigned long lastBeatWindowStart = 0; // Marca o início da janela de contagem de batimentos
+int beatCountWindow = 0;             // Armazena os batimentos dentro da janela
+unsigned long totalSamplesStored = 0; // Contador de amostras armazenadas (simulado)
 
-// --- Funções utilitárias ---
+// ============================================================
+// FUNÇÕES DE LEITURA DE SENSORES
+// ============================================================
+
+// --- Função para leitura de temperatura ---
 float readTemperature() {
   #if USE_DHT
-    float t = dht.readTemperature();
-    if (isnan(t)) return 36.0 + random(-50,50)/100.0;
+    float t = dht.readTemperature(); // Lê a temperatura do DHT22
+    if (isnan(t)) return 36.0 + random(-50,50)/100.0; // Gera valor aleatório caso a leitura falhe
     return t;
   #else
+    // Caso o DHT não esteja sendo usado, gera valor simulado entre 35°C e 38°C
     return 36.5 + random(-150,150)/100.0;
   #endif
 }
 
+// --- Função para leitura de umidade ---
 float readHumidity() {
   #if USE_DHT
-    float h = dht.readHumidity();
-    if (isnan(h)) return 50.0 + random(-200,200)/100.0;
+    float h = dht.readHumidity(); // Lê a umidade do DHT22
+    if (isnan(h)) return 50.0 + random(-200,200)/100.0; // Valor simulado caso falhe
     return h;
   #else
+    // Caso sem DHT: retorna valor simulado entre 42% e 48%
     return 45.0 + random(-300,300)/100.0;
   #endif
 }
 
-// Conta batimentos via botão (ou simula)
+// ============================================================
+// FUNÇÃO DE LEITURA DE BATIMENTOS CARDÍACOS (BPM)
+// ============================================================
+
+// Essa função retorna o número de batimentos por minuto.
+// Pode usar um botão (modo real) ou valores simulados.
 int getBeatsPerMinute() {
-  unsigned long now = millis();
+  unsigned long now = millis(); // Tempo atual desde o início do programa
+
   if (USE_BUTTON_FOR_BEATS) {
-    if (now - lastBeatWindowStart >= 10000) { // janela de 10s
-      int bpm = (beatCountWindow * 60000) / 10000;
-      beatCountWindow = 0;
+    // Caso o modo botão esteja ativo, conta quantos cliques em 10 segundos
+    if (now - lastBeatWindowStart >= 10000) { // Janela de 10 segundos
+      int bpm = (beatCountWindow * 60000) / 10000; // Converte batidas em BPM
+      beatCountWindow = 0; // Reinicia contagem
       lastBeatWindowStart = now;
       return bpm;
     } else {
-      return -1; // ainda coletando
+      return -1; // Indica que ainda está coletando dados
     }
   } else {
-    return 60 + random(-15,45); // simulado
+    // Caso esteja em modo simulado, gera valor aleatório entre 45 e 105 BPM
+    return 60 + random(-15,45);
   }
 }
 
-// ISR do botão
+// ============================================================
+// INTERRUPÇÃO DO BOTÃO (para simular batimentos reais)
+// ============================================================
 #if USE_BUTTON_FOR_BEATS
 void IRAM_ATTR onBeatButton() {
-  beatCountWindow++;
+  beatCountWindow++; // Incrementa batida ao pressionar o botão
 }
 #endif
 
+// ============================================================
+// FUNÇÃO PARA PROCESSAR COMANDOS RECEBIDOS VIA SERIAL
+// ============================================================
+// Exemplo: enviar pelo terminal do Wokwi "c" para conectar, "d" para desconectar
 void processSerialCommands() {
   if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
+    String cmd = Serial.readStringUntil('\n'); // Lê o comando
     cmd.trim();
     if (cmd.length() == 0) return;
+
     if (cmd.equalsIgnoreCase("c") || cmd.equalsIgnoreCase("connect")) {
-      wifiConnected = true;
+      wifiConnected = true; // Simula conexão Wi-Fi
       Serial.println("[CMD] Simulação: CONNECTED");
-    } else if (cmd.equalsIgnoreCase("d") || cmd.equalsIgnoreCase("disconnect")) {
-      wifiConnected = false;
+    } 
+    else if (cmd.equalsIgnoreCase("d") || cmd.equalsIgnoreCase("disconnect")) {
+      wifiConnected = false; // Simula desconexão Wi-Fi
       Serial.println("[CMD] Simulação: DISCONNECTED");
-    } else if (cmd.equalsIgnoreCase("sync")) {
+    } 
+    else if (cmd.equalsIgnoreCase("sync")) {
       Serial.println("[CMD] Sincronização não implementada na simulação.");
-    } else if (cmd.equalsIgnoreCase("status")) {
+    } 
+    else if (cmd.equalsIgnoreCase("status")) {
+      // Mostra status de conexão e quantidade de amostras armazenadas
       Serial.printf("[STATUS] conectado=%d samples=%lu\n", wifiConnected ? 1 : 0, totalSamplesStored);
-    } else {
+    } 
+    else {
       Serial.printf("[CMD] Comando desconhecido: %s\n", cmd.c_str());
     }
   }
 }
 
-// Simulação de armazenamento local (sem SPIFFS real)
+// ============================================================
+// FUNÇÃO DE ARMAZENAMENTO SIMULADO (sem SPIFFS real)
+// ============================================================
+// Aqui simulamos a gravação de dados localmente (Edge Computing)
 bool appendSampleSimulated(const String &line) {
-  Serial.print("[SIMULATED_SAVE] ");
+  Serial.print("[SIMULATED_SAVE] ");  // Mostra no terminal o dado "armazenado"
   Serial.println(line);
-  totalSamplesStored++;
+  totalSamplesStored++;               // Incrementa contador de amostras
   Serial.printf("[STORE] Amostra simulada armazenada (total=%lu).\n", totalSamplesStored);
   return true;
 }
 
-// --- Setup ---
+// ============================================================
+// FUNÇÃO DE CONFIGURAÇÃO INICIAL (setup)
+// ============================================================
 void setup() {
-  Serial.begin(115200);
-  delay(2000);
-  Serial.println("CardioIA - Fase3 Parte1 (Simulação Wokwi)");
+  Serial.begin(115200);    // Inicializa comunicação serial
+  delay(2000);             // Aguarda estabilização
+
+  Serial.println("CardioIA - Fase 3 Parte 1 (Simulação Wokwi)");
   Serial.println("----------------------------------------------------");
   Serial.println("[INFO] Modo simulado de armazenamento (sem SPIFFS real no Wokwi).");
 
   #if USE_DHT
-    dht.begin();
+    dht.begin(); // Inicializa o sensor DHT22
     Serial.println("DHT22 inicializado com sucesso.");
   #endif
 
   #if USE_BUTTON_FOR_BEATS
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onBeatButton, FALLING);
+    pinMode(BUTTON_PIN, INPUT_PULLUP); // Configura botão com resistor interno
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), onBeatButton, FALLING); // Interrupção para batimento
     lastBeatWindowStart = millis();
     Serial.println("Botão de batimentos configurado.");
   #endif
@@ -216,21 +253,29 @@ void setup() {
   Serial.println("----------------------------------------------------");
 }
 
-// --- Loop ---
+// ============================================================
+// LOOP PRINCIPAL DO PROGRAMA
+// ============================================================
+// Este loop executa leituras periódicas dos sensores e "armazena" localmente
 void loop() {
-  processSerialCommands();
+  processSerialCommands();  // Verifica comandos recebidos via Serial
 
-  unsigned long now = millis();
+  unsigned long now = millis(); // Tempo atual
+
+  // Executa a cada intervalo de amostragem definido em config.h
   if (now - lastSampleMillis >= SAMPLE_INTERVAL_MS) {
     lastSampleMillis = now;
 
-    float temp = readTemperature();
-    float hum = readHumidity();
-    int bpm = getBeatsPerMinute();
+    float temp = readTemperature();  // Lê temperatura
+    float hum = readHumidity();      // Lê umidade
+    int bpm = getBeatsPerMinute();   // Lê batimentos (simulados ou reais)
 
+    // Se estiver usando botão e janela ainda não terminou, apenas aguarda
     if (USE_BUTTON_FOR_BEATS && bpm == -1) {
       Serial.println("[SAMPLE] Aguardando completar janela de batimentos...");
-    } else {
+    } 
+    else {
+      // Monta o JSON com as medições
       String sample = "{";
       sample += "\"timestamp\":" + String(now);
       sample += ",\"temp\":" + String(temp,2);
@@ -238,14 +283,16 @@ void loop() {
       sample += ",\"bpm\":" + String(bpm);
       sample += "}";
 
+      // Mostra o dado coletado e simula armazenamento local
       Serial.print("[SAMPLE] ");
       Serial.println(sample);
       appendSampleSimulated(sample);
     }
   }
 
-  delay(10);
+  delay(10); // Pequeno atraso para estabilidade
 }
+
 ```
 
 **2. Cole este código em 'diagram.json':**
