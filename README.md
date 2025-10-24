@@ -507,7 +507,7 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 
 ![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.png)
 
-![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.pn g)
+![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.png)
 
 **Caso não esteja conseguindo visualizer por instabilidade da plataforma [entre neste link, entre na pasta Parte 2 e visualize as imagens](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
