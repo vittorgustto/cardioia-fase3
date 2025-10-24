@@ -369,11 +369,9 @@ A imagem abaixo mostra:
 - Lógica de resiliência offline/online.
 
 ![Print do ESP32 no Wokwi](./docs/Parte%201/Print-ESP32-Wokwi.png)
-https://drive.google.com/file/d/1_Kk-16saKfgPN8FrhP1Si2dzvv6zeuzW/view?usp=drive_link
-https://onedrive.live.com/?listurl=%2Fpersonal%2F4140def327662c57%2FDocuments&viewid=2b0533cf%2D29cd%2D4217%2Dbc48%2D82ad70ee452d&id=%2Fpersonal%2F4140def327662c57%2FDocuments%2FFACULDADE%2FFase%203%20%282025%29%2FParte%201%2FPrint%2DESP32%2DWokwi%2Epng&parent=%2Fpersonal%2F4140def327662c57%2FDocuments%2FFACULDADE%2FFase%203%20%282025%29%2FParte%201
 
 
-**Caso não esteja conseguindo visualizer [entre neste link, entre na pasta Parte 1 e visualize a imagem](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizer por instabilidade da plataforma [entre neste link, entre na pasta Parte 1 e visualize a imagem](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 
 ---
@@ -509,9 +507,9 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 
 ![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.png)
 
-![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.png)
+![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.pn g)
 
-**Caso não esteja conseguindo visualizer [entre neste link, entre na pasta Parte 2 e visualize as imagens](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizer por instabilidade da plataforma [entre neste link, entre na pasta Parte 2 e visualize as imagens](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 ---
 
