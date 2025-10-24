@@ -371,7 +371,7 @@ A imagem abaixo mostra:
 ![Print do ESP32 no Wokwi](./docs/Parte%201/Print-ESP32-Wokwi.png)
 
 
-**Caso não esteja conseguindo visualizer por instabilidade da plataforma [entre neste link, entre na pasta Parte 1 e visualize a imagem](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizar por instabilidade da plataforma [entre neste link, entre na pasta Parte 1 e visualize a imagem](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 
 ---
@@ -505,7 +505,7 @@ As imagens abaixo mostram o funcionamento do painel e do fluxo:
 - Dashboard em execução com atualização em tempo real
 - Alertas automáticos sendo disparados
 
-![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.png)
+![Gráfico Node-RED](./docs/Parte%202/Print-Node-RED.pn g)
 
 ![Dashboard Node-RED](./docs/Parte%202/Print-Node-RED-Dashboard.png)
 
@@ -519,7 +519,7 @@ O relatório detalhado sobre o fluxo MQTT e a configuração do dashboard encont
 
 📄 [Relatório CardioIA Fase 3 - Parte 2](docs/Parte%202/Relatório-CardioIA-Fase-3-Parte-2.docx)
 
-**Caso não esteja conseguindo visualizer [entre neste link, entre na pasta Parte 2 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
+**Caso não esteja conseguindo visualizar [entre neste link, entre na pasta Parte 2 e visualize o documento](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
 ---
 
