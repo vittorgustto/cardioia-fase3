@@ -427,6 +427,12 @@ cardioIA/vitor/telemetry
 
 ---
 
+## 💻 Código ESP32 (Arduino/Wokwi)
+
+**[Acesse o código do ESP32 no Wokwi](https://wokwi.com/projects/445458674379080705)**
+
+---
+
 ## ⚙️ Configuração do HiveMQ Cloud
 
 1. [Acesse HiveMQ Cloud Console](https://console.hivemq.cloud/)
