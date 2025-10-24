@@ -369,7 +369,7 @@ A imagem abaixo mostra:
 - Lógica de resiliência offline/online.
 
 ![Print do ESP32 no Wokwi](./docs/Parte%201/Print-ESP32-Wokwi.png)
-![Print do ESP32 no Wokwi](https://1drv.ms/i/c/4140DEF327662C57/AbZP6hzaw99NqmElPP_iIm4?e=dcUkes)
+![Print do ESP32 no Wokwi](https://onedrive.live.com/?photosData=%2Fshare%2F4140DEF327662C57%21s1cea4fb6c3da4ddfaa61253cffe2226e%3Fithint%3Dphoto%26e%3D2eUP6a%26migratedtospo%3Dtrue&view=8)
 
 **Caso não esteja conseguindo visualizer [entre neste link, entre na pasta Parte 1 e visualize a imagem](https://1drv.ms/f/c/4140def327662c57/EtANW4QQimVLvyKv6U9gTp8Bx5m8fb_pBEWC7Vty167qhA?e=tF8ObI)**
 
